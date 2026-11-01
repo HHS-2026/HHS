@@ -8,6 +8,9 @@ import {
 
 import CandidateProfilePage from '../src/features/candidate/pages/CandidateProfilePage'
 import Login from '../src/features/public/auth/pages/Login'
+import SignUp from "../src/features/public/auth/pages/SignUp";
+import CompanyProfilePage from '../src/features/Companies/Profile/CompanyProfilePage'
+// import RecruiterProfilePage from ''
 
 import { ROUTES } from '../src/routes'
 
@@ -38,6 +41,16 @@ function App() {
           path="*"
           element={<Navigate to={ROUTES.login} replace />}
         />
+        <Route path={ROUTES.signup} element={<SignUp />} />
+        <Route
+  path={ROUTES.companyProfile}
+  element={<CompanyProfilePage />}
+/>
+
+{/* <Route
+  path={ROUTES.recruiterProfile}
+  element={<RecruiterProfilePage />}
+/> */}
       </Routes>
     </BrowserRouter>
   )

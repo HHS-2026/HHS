@@ -11,42 +11,45 @@ function Login() {
   const navigate = useNavigate();
 
  
+
 async function handleSubmit(event) {
-  event.preventDefault()
-  console.log("clicked")
+  event.preventDefault();
+  setMessage("");
+  setLoading(true);
 
-  setMessage('')
-  setLoading(true)
-
-  const formData = new FormData(event.currentTarget)
+  const formData = new FormData(event.currentTarget);
 
   const credentials = {
-    email: formData.get('email'),
-    password: formData.get('password'),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
+
+  try {
+    const response = await loginUser(credentials);
+    const data = response.data;
+
+    if (!data?.token) {
+      throw new Error("Login response did not include a token");
+    }
+
+    const role = data.user?.role?.toLowerCase();
+
+    if (role === "candidate") {
+      sessionStorage.setItem("token", data.token);
+      navigate(ROUTES.candidateProfile);
+    } else if (
+      ["company", "company_admin", "company_member", "employer", "recruiter"].includes(role)
+    ) {
+      sessionStorage.setItem("token", data.token);
+      navigate(ROUTES.companyProfile);
+    } else {
+      setMessage("This account does not have an HHS candidate or company role.");
+    }
+  } catch (error) {
+    setMessage(error.message || "Login failed. Please try again.");
+  } finally {
+    setLoading(false);
   }
-
- 
-try {
-  const response = await loginUser(credentials);
-
-  const data = response.data;
-
-  if (!data?.token) {
-    throw new Error("Login response did not include a token");
-  }
-
-  if (data.user?.role === "candidate") {
-    sessionStorage.setItem("token", data.token);
-    navigate(ROUTES.candidateProfile);
-  } else {
-    setMessage("This account is not a candidate account.");
-  }
-} catch (error) {
-  setMessage(error.message || "Login failed. Please try again.");
-} finally {
-  setLoading(false);
-}
-
 }
 
 
@@ -166,7 +169,7 @@ try {
 
             <p className="login-signup">
               New to Hire and Hired Stars?{" "}
-              <Link to={ROUTES.ask}>Get started</Link>
+              <Link to={ROUTES.signup}>create an account</Link>
             </p>
             <p className="login-terms">
               By continuing, you agree to our{" "}

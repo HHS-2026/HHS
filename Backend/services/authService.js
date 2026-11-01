@@ -74,3 +74,37 @@ export const loginUser = async (email, password) => {
     },
   };
 };
+
+//Signup
+export const registerUser = async (email, password, role) => {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  // Duplicate email check
+  const existingUser = await User.findOne({
+    email: normalizedEmail,
+  });
+
+  if (existingUser) {
+    const error = new Error("An account with this email already exists.");
+    error.statusCode = 409;
+    throw error;
+  }
+
+  // Password ko hash karna
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  // Database mein user create karna
+  const user = await User.create({
+    email: normalizedEmail,
+    password: hashedPassword,
+    role,
+  });
+
+  // Password response mein return nahi karna
+  return {
+    id: user._id.toString(),
+    email: user.email,
+    role: user.role,
+    isEmailVerified: user.isEmailVerified,
+  };
+};

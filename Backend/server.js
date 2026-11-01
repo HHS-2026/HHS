@@ -8,6 +8,8 @@ import rateLimit from "express-rate-limit";
 import connectDB from "./config/db.js";
 import candidateRoutes from "./routes/candidateRoutes.js";
 import authRoutes from './routes/authRoutes.js'
+import companyRoutes from "./routes/companyRoutes.js";
+import recruiterRoutes from "./routes/recruiterRoutes.js";
 
 dotenv.config();
 
@@ -39,6 +41,9 @@ app.use("/api", apiLimiter);
 
 app.use("/api/candidates", candidateRoutes);
 app.use('/api/auth', authRoutes)
+app.use("/api/companies", companyRoutes);
+app.use("/api/recruiters", recruiterRoutes);
+
 
 // Health-check route
 app.get("/api/health", (req, res) => {
